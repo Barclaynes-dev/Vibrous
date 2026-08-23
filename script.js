@@ -95,3 +95,29 @@
   overlay.addEventListener('click', closeDrawer);
   links.forEach(link => link.addEventListener('click', closeDrawer));
 })();
+
+// ===== Mobile Nav Scroll Background =====
+(function () {
+  const nav = document.querySelector('.nav');
+  const offerSection = document.getElementById('offer');
+  if (!nav || !offerSection) return;
+
+  let ticking = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        // Toggle background when offer section reaches the nav
+        if (offerSection.getBoundingClientRect().top <= 80) {
+          nav.classList.add('nav-scrolled');
+        } else {
+          nav.classList.remove('nav-scrolled');
+        }
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+})();
