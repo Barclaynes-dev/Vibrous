@@ -72,6 +72,7 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.5rem;
+  padding-top: max(2.25rem, calc(env(safe-area-inset-top) + 0.75rem));
   z-index: 100;
   mix-blend-mode: difference;
   color: var(--off-white);
@@ -85,7 +86,7 @@ a {
 }
 
 .nav-links {
-  display: flex;
+  display: none;
   gap: 1.25rem;
   font-size: 0.85rem;
 }
@@ -97,6 +98,123 @@ a {
 
 .nav-links a:hover {
   opacity: 1;
+}
+
+/* ===== Nav Toggle ===== */
+.nav-toggle {
+  display: flex;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 6px;
+  width: 24px;
+  padding: 0;
+  z-index: 110;
+}
+
+.nav-toggle .line {
+  display: block;
+  height: 2px;
+  background: var(--off-white);
+  transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+}
+
+.nav-toggle .line-top {
+  width: 24px;
+}
+
+.nav-toggle .line-mid {
+  width: 14px;
+  align-self: flex-end;
+}
+
+.nav-toggle .line-bot {
+  width: 24px;
+}
+
+.nav-toggle.is-active .line-top {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.nav-toggle.is-active .line-mid {
+  opacity: 0;
+  width: 0;
+}
+
+.nav-toggle.is-active .line-bot {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ===== Drawer Overlay ===== */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 104;
+}
+
+.drawer-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== Nav Drawer ===== */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -50%;
+  width: 50%;
+  height: 100vh;
+  background: rgba(16, 16, 16, 0.65);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-left: 1px solid rgba(253, 252, 248, 0.1);
+  z-index: 105;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 8rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-drawer.is-active {
+  right: 0;
+}
+
+.drawer-links {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.drawer-link {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--off-white);
+  padding: 1.25rem 0.5rem;
+  border-bottom: 1px solid rgba(253, 252, 248, 0.08);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-drawer.is-active .drawer-link {
+  opacity: 0.85;
+  transform: translateX(0);
+}
+.nav-drawer.is-active .drawer-link:nth-child(1) { transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s; }
+.nav-drawer.is-active .drawer-link:nth-child(2) { transition: opacity 0.4s ease 0.18s, transform 0.4s ease 0.18s; }
+.nav-drawer.is-active .drawer-link:nth-child(3) { transition: opacity 0.4s ease 0.26s, transform 0.4s ease 0.26s; }
+
+.nav-drawer.is-active .drawer-link:hover {
+  opacity: 1;
+  color: var(--gold);
 }
 
 /* ===== Hero ===== */
@@ -724,6 +842,22 @@ button:focus-visible {
 @media (min-width: 640px) {
   :root {
     --section-pad: 7rem 2rem;
+  }
+
+  .nav-links {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-drawer {
+    display: none;
+  }
+
+  .drawer-overlay {
+    display: none;
   }
 
   .grid {

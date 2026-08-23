@@ -67,3 +67,31 @@
     { passive: true }
   );
 })();
+
+// ===== Mobile drawer navigation =====
+(function () {
+  const toggle = document.querySelector('.nav-toggle');
+  const drawer = document.querySelector('.nav-drawer');
+  const overlay = document.querySelector('.drawer-overlay');
+  const links = document.querySelectorAll('.drawer-link');
+
+  if (!toggle || !drawer || !overlay) return;
+
+  function toggleDrawer() {
+    const isActive = drawer.classList.toggle('is-active');
+    toggle.classList.toggle('is-active');
+    overlay.classList.toggle('is-active');
+    document.body.style.overflow = isActive ? 'hidden' : '';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('is-active');
+    toggle.classList.remove('is-active');
+    overlay.classList.remove('is-active');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', toggleDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  links.forEach(link => link.addEventListener('click', closeDrawer));
+})();
