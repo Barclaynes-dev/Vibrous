@@ -73,7 +73,7 @@
   const toggle = document.querySelector('.nav-toggle');
   const drawer = document.querySelector('.nav-drawer');
   const overlay = document.querySelector('.drawer-overlay');
-  const links = document.querySelectorAll('.drawer-link');
+  const links = document.querySelectorAll('.drawer-link, .drawer-cta-btn');
 
   if (!toggle || !drawer || !overlay) return;
 
@@ -82,6 +82,7 @@
     toggle.classList.toggle('is-active');
     overlay.classList.toggle('is-active');
     document.body.style.overflow = isActive ? 'hidden' : '';
+    document.body.classList.toggle('drawer-open', isActive);
   }
 
   function closeDrawer() {
@@ -89,6 +90,7 @@
     toggle.classList.remove('is-active');
     overlay.classList.remove('is-active');
     document.body.style.overflow = '';
+    document.body.classList.remove('drawer-open');
   }
 
   toggle.addEventListener('click', toggleDrawer);
