@@ -59,7 +59,8 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem; /* tight — badge then two lines directly beneath */
+  gap: 0.25rem;
+  /* tight — badge then two lines directly beneath */
 }
 
 .float-1 .eyebrow {
@@ -71,7 +72,8 @@ h3 {
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  margin-bottom: 0.4rem; /* small gap between badge and text below */
+  margin-bottom: 0.4rem;
+  /* small gap between badge and text below */
   text-transform: uppercase;
 }
 
@@ -80,7 +82,8 @@ h3 {
   font-size: 1rem;
   line-height: 1.3;
   margin: 0;
-  padding-left: 0.1rem; /* keeps text flush-left under badge */
+  padding-left: 0.1rem;
+  /* keeps text flush-left under badge */
 }
 
 a {
@@ -150,6 +153,7 @@ a {
   width: 24px;
   padding: 0;
   z-index: 110;
+  mix-blend-mode: difference;
 }
 
 .nav-toggle .line {
@@ -471,6 +475,72 @@ body.drawer-open .nav {
   height: 2.5px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+/* Twinkling & Floating animations for stars (GPU-accelerated, lag-free) */
+.star:nth-child(4n+1) {
+  animation: twinkle-float-1 4s ease-in-out infinite alternate;
+}
+
+.star:nth-child(4n+2) {
+  animation: twinkle-float-2 6s ease-in-out infinite alternate;
+}
+
+.star:nth-child(4n+3) {
+  animation: twinkle-float-3 5s ease-in-out infinite alternate;
+}
+
+.star:nth-child(4n) {
+  animation: twinkle-float-4 7s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle-float-1 {
+  0% {
+    opacity: 0.3;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(18px, -24px, 0);
+  }
+}
+
+@keyframes twinkle-float-2 {
+  0% {
+    opacity: 0.8;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0.2;
+    transform: translate3d(-22px, 16px, 0);
+  }
+}
+
+@keyframes twinkle-float-3 {
+  0% {
+    opacity: 0.4;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0.9;
+    transform: translate3d(24px, 12px, 0);
+  }
+}
+
+@keyframes twinkle-float-4 {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0.3;
+    transform: translate3d(-16px, -20px, 0);
+  }
 }
 
 .hero-content {
@@ -536,7 +606,8 @@ body.drawer-open .nav {
   font-family: var(--font-body);
   margin-top: 0.5rem;
   padding-left: 3.4rem;
-  padding-right: 0; /* fixed: negative padding is invalid */
+  padding-right: 0;
+  /* fixed: negative padding is invalid */
 }
 
 .scroll-cue {
@@ -663,21 +734,25 @@ section em {
 
 /* Each line shifts around the centre — some left, some right */
 .offer-heading .line-1 {
-  transform: translateX(-10%); /* left of centre */
+  transform: translateX(calc(-10% + var(--scroll-shift-left, 0px)));
+  will-change: transform;
 }
 
 .offer-heading .line-2 {
-  transform: translateX(8%); /* right of centre */
+  transform: translateX(calc(8% + var(--scroll-shift-right, 0px)));
+  will-change: transform;
 }
 
 .offer-heading .line-3 {
-  transform: translateX(-5%); /* slightly left */
+  transform: translateX(calc(-5% + var(--scroll-shift-left, 0px)));
+  will-change: transform;
 }
 
 .offer-heading .line-4 {
-  transform: translateX(12%); /* furthest right */
+  transform: translateX(calc(12% + var(--scroll-shift-right, 0px)));
   color: var(--gold);
   font-style: normal;
+  will-change: transform;
 }
 
 .floating-text {
@@ -775,7 +850,7 @@ section em {
   .offer-heading .line-2,
   .offer-heading .line-3,
   .offer-heading .line-4 {
-    transform: translateX(0);
+    transform: translateX(0) !important;
     padding-left: 0;
   }
 
@@ -824,16 +899,240 @@ section em {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .about h2 {
   max-width: 640px;
+  position: relative;
+  z-index: 1;
+}
+
+.about .eyebrow {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== About — animated outline triangles ===== */
+.about-tri {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.22;
+  will-change: transform;
+}
+
+/* Triangle 1 — small, scattered top-left */
+.about-tri--1 {
+  width: 44px;
+  top: 18%;
+  left: 10%;
+  animation: tri-1 11s ease-in-out infinite;
+}
+
+/* Triangle 2 — large, bottom-right corner */
+.about-tri--2 {
+  width: 125px;
+  bottom: 5%;
+  right: 6%;
+  animation: tri-2 15s ease-in-out infinite;
+}
+
+/* Triangle 3 — tiny, mid-centre-right area */
+.about-tri--3 {
+  width: 28px;
+  top: 50%;
+  left: 58%;
+  animation: tri-3 9s ease-in-out infinite;
+}
+
+/* Triangle 4 — medium, upper-right */
+.about-tri--4 {
+  width: 72px;
+  top: 12%;
+  right: 14%;
+  animation: tri-4 13s ease-in-out infinite;
+}
+
+/* Wandering paths — X + Y movement + rotation, full loop */
+@keyframes tri-1 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(16px, -18px) rotate(14deg);
+  }
+
+  50% {
+    transform: translate(-8px, -30px) rotate(-6deg);
+  }
+
+  75% {
+    transform: translate(22px, -12px) rotate(22deg);
+  }
+
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+}
+
+@keyframes tri-2 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(-20px, -22px) rotate(-10deg);
+  }
+
+  50% {
+    transform: translate(12px, -35px) rotate(8deg);
+  }
+
+  75% {
+    transform: translate(-28px, -14px) rotate(-18deg);
+  }
+
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+}
+
+@keyframes tri-3 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(-12px, 14px) rotate(30deg);
+  }
+
+  50% {
+    transform: translate(18px, 20px) rotate(-10deg);
+  }
+
+  75% {
+    transform: translate(-6px, 8px) rotate(20deg);
+  }
+
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+}
+
+@keyframes tri-4 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(14px, -20px) rotate(-16deg);
+  }
+
+  50% {
+    transform: translate(-18px, -28px) rotate(12deg);
+  }
+
+  75% {
+    transform: translate(10px, -10px) rotate(-24deg);
+  }
+
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
 }
 
 /* ===== Services grid ===== */
 .services {
-  background: var(--obsidian);
+  background: linear-gradient(135deg,
+      #0a0a0a 0%,
+      #0f0d0b 20%,
+      #1a1006 40%,
+      #0d0d0d 55%,
+      #1c1108 70%,
+      #0a0a0a 85%,
+      #120e07 100%);
+  background-size: 400% 400%;
+  animation: services-gradient 14s ease infinite;
   color: var(--off-white);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle amber glow orbs behind the grid */
+.services::before,
+.services::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  z-index: 0;
+}
+
+.services::before {
+  width: 55vw;
+  height: 55vw;
+  max-width: 520px;
+  max-height: 520px;
+  background: radial-gradient(circle, rgba(201, 100, 20, 0.18) 0%, transparent 70%);
+  top: -10%;
+  right: -10%;
+  animation: orb-drift-a 18s ease-in-out infinite alternate;
+}
+
+.services::after {
+  width: 40vw;
+  height: 40vw;
+  max-width: 380px;
+  max-height: 380px;
+  background: radial-gradient(circle, rgba(180, 80, 10, 0.12) 0%, transparent 70%);
+  bottom: -5%;
+  left: -8%;
+  animation: orb-drift-b 22s ease-in-out infinite alternate;
+}
+
+/* Ensure content sits above pseudo-elements */
+.services .eyebrow,
+.services h2,
+.services .grid {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes services-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes orb-drift-a {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(-6%, 10%) scale(1.15);
+  }
+}
+
+@keyframes orb-drift-b {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(8%, -12%) scale(1.2);
+  }
 }
 
 .services .eyebrow {
@@ -948,12 +1247,38 @@ section em {
 
 /* ===== Contact ===== */
 .contact {
-  background: var(--obsidian);
+  background: #080808;
   color: var(--off-white);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Orange bloom — height-capped so it can never reach the text */
+.contact::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 38%;
+  /* hard ceiling — gradient lives only in this box */
+  background: radial-gradient(ellipse 90% 100% at 50% 100%, #c85010 0%, #952800 40%, #3a0e00 70%, transparent 88%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep all content above the glow layer */
+.contact .eyebrow,
+.contact h2,
+.contact .contact-links,
+.contact .footer-note,
+.contact .powered-by {
+  position: relative;
+  z-index: 1;
 }
 
 .contact h2 {
@@ -1025,7 +1350,8 @@ button:focus-visible {
   .offer-badge,
   .wordmark,
   .cycler,
-  .scroll-cue {
+  .scroll-cue,
+  .star {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -1117,5 +1443,134 @@ button:focus-visible {
   .services .eyebrow,
   .services h2 {
     padding-left: 0;
+  }
+}
+
+/* ===== Floating WhatsApp Button ===== */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 999;
+  width: 52px;
+  height: 52px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45), 0 2px 6px rgba(0, 0, 0, 0.18);
+  text-decoration: none;
+  color: #fff;
+  /* Hidden by default — shown only after hero scrolls out */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.whatsapp-fab.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.whatsapp-fab::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 211, 102, 0.55);
+  animation: wa-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes wa-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+.whatsapp-fab-icon {
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+/* Tooltip */
+.whatsapp-fab-tooltip {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: #111;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.whatsapp-fab-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right: none;
+  border-left-color: #111;
+}
+
+.whatsapp-fab:hover {
+  transform: scale(1.12);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.55), 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.whatsapp-fab:hover .whatsapp-fab-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Responsive sizing */
+@media (max-width: 480px) {
+  .whatsapp-fab {
+    width: 46px;
+    height: 46px;
+    bottom: 1.2rem;
+    right: 1.2rem;
+  }
+
+  .whatsapp-fab-icon {
+    font-size: 1.35rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .whatsapp-fab {
+    width: 56px;
+    height: 56px;
+    bottom: 2rem;
+    right: 2rem;
+  }
+
+  .whatsapp-fab-icon {
+    font-size: 1.7rem;
   }
 }

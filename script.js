@@ -123,3 +123,83 @@
     { passive: true }
   );
 })();
+
+// ===== WhatsApp FAB — show only after hero leaves viewport =====
+(function () {
+  const fab = document.getElementById('whatsapp-fab');
+  const hero = document.getElementById('hero');
+  if (!fab || !hero) return;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      // hero is intersecting  → user is in/near hero → hide FAB
+      // hero NOT intersecting → hero has scrolled away  → show FAB
+      if (entry.isIntersecting) {
+        fab.classList.remove('is-visible');
+      } else {
+        fab.classList.add('is-visible');
+      }
+    },
+    {
+      // Fire as soon as any part of the hero enters or leaves the viewport
+      threshold: 0
+    }
+  );
+
+  observer.observe(hero);
+})();
+
+// ===== Offer Heading Parallax Scroll (Optimized — No Layout Thrashing) =====
+(function () {
+  const offerSection = document.getElementById('offer');
+  if (!offerSection) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  // Cache dimensions to prevent layout recalculations (thrashing) inside the scroll handler
+  let offerOffsetTop = 0;
+  let offerHeight = 0;
+  let viewportHeight = window.innerHeight;
+
+  function updateDimensions() {
+    offerOffsetTop = offerSection.offsetTop;
+    offerHeight = offerSection.offsetHeight;
+    viewportHeight = window.innerHeight;
+  }
+
+  // Calculate once fonts/images are ready
+  window.addEventListener('load', updateDimensions);
+  window.addEventListener('resize', updateDimensions, { passive: true });
+  updateDimensions(); // Initial baseline
+
+  let ticking = false;
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+
+        // Check if the section is within the viewport range
+        if (scrollY + viewportHeight > offerOffsetTop && scrollY < offerOffsetTop + offerHeight) {
+          const relativeScroll = scrollY - (offerOffsetTop - viewportHeight);
+          const range = offerHeight + viewportHeight;
+          const progress = relativeScroll / range;
+          const centerProgress = progress - 0.5;
+
+          const shiftValue = centerProgress * 150;
+
+          offerSection.style.setProperty('--scroll-shift-left', `${-shiftValue}px`);
+          offerSection.style.setProperty('--scroll-shift-right', `${shiftValue}px`);
+        }
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+})();
+
+
