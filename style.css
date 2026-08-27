@@ -1245,6 +1245,36 @@ section em {
   font-size: 0.95rem;
 }
 
+/* ===== Launch Reel (looping video) ===== */
+.launch-reel {
+  display: flex;
+  justify-content: center;
+  background: var(--off-white);
+}
+
+.launch-reel-frame {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1080 / 1350;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.launch-reel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #0a0a0a;
+}
+
+@media (min-width: 1024px) {
+  .launch-reel-frame {
+    max-width: 420px;
+  }
+}
+
 /* ===== Contact ===== */
 .contact {
   background: #080808;

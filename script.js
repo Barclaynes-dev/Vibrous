@@ -149,6 +149,41 @@
   observer.observe(hero);
 })();
 
+// ===== Launch Reel — lazy-loaded looping video, large screens only =====
+(function () {
+  const section = document.getElementById('launch-reel');
+  const video = document.getElementById('launch-reel-video');
+  if (!section || !video) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let sourceLoaded = false;
+
+  function loadSource() {
+    if (sourceLoaded) return;
+    sourceLoaded = true;
+    video.src = 'assets/video/vibrous_launch.mp4';
+    video.load();
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadSource();
+          video.play().catch(() => { });
+        } else {
+          video.pause();
+        }
+      });
+    },
+    { rootMargin: '200px 0px', threshold: 0 }
+  );
+
+  observer.observe(section);
+})();
+
 // ===== Offer Heading Parallax Scroll (Optimized — No Layout Thrashing) =====
 (function () {
   const offerSection = document.getElementById('offer');
@@ -201,5 +236,3 @@
     { passive: true }
   );
 })();
-
-
