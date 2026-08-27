@@ -1275,6 +1275,28 @@ section em {
   }
 }
 
+/* ===== Showcase Reel (product UI demo video) ===== */
+/* ===== Showcase Reel (product UI demo video) ===== */
+.showcase-reel {
+  padding-top: 1.5rem;
+}
+
+.showcase-reel-frame {
+  width: 100%;
+  aspect-ratio: 1920 / 730;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+.showcase-reel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #ffffff;
+}
+
 /* ===== Contact ===== */
 .contact {
   background: #080808;

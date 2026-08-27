@@ -149,7 +149,7 @@
   observer.observe(hero);
 })();
 
-// ===== Launch Reel — lazy-loaded looping video, large screens only =====
+// ===== Launch Reel — lazy-loaded looping video =====
 (function () {
   const section = document.getElementById('launch-reel');
   const video = document.getElementById('launch-reel-video');
@@ -172,7 +172,42 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           loadSource();
-          video.play().catch(() => { });
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    },
+    { rootMargin: '200px 0px', threshold: 0 }
+  );
+
+  observer.observe(section);
+})();
+
+// ===== Showcase Reel — lazy-loaded looping video =====
+(function () {
+  const section = document.getElementById('showcase-reel');
+  const video = document.getElementById('showcase-reel-video');
+  if (!section || !video) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let sourceLoaded = false;
+
+  function loadSource() {
+    if (sourceLoaded) return;
+    sourceLoaded = true;
+    video.src = 'assets/video/showcase_reel.mp4';
+    video.load();
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadSource();
+          video.play().catch(() => {});
         } else {
           video.pause();
         }
@@ -236,3 +271,5 @@
     { passive: true }
   );
 })();
+
+
