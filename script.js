@@ -272,4 +272,85 @@
   );
 })();
 
+// ===== FAQ accordion =====
+(function () {
+  const items = document.querySelectorAll('.faq-item');
+  if (!items.length) return;
 
+  items.forEach((item) => {
+    const btn = item.querySelector('.faq-question');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+
+      // Close all
+      items.forEach((i) => {
+        i.classList.remove('is-open');
+        i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+
+      // Open clicked (unless it was already open)
+      if (!isOpen) {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+})();
+
+// ===== FAQ View more / Show less =====
+(function () {
+  const toggleBtn = document.getElementById('faq-toggle');
+  const extra = document.querySelector('.faq-extra');
+  const label = toggleBtn && toggleBtn.querySelector('.faq-toggle-label');
+  if (!toggleBtn || !extra) return;
+
+  // Wrap the direct children in one div so grid-template-rows animates correctly
+  const inner = document.createElement('div');
+  while (extra.firstChild) inner.appendChild(extra.firstChild);
+  extra.appendChild(inner);
+
+  toggleBtn.addEventListener('click', () => {
+    const isOpen = extra.classList.contains('is-open');
+
+    if (isOpen) {
+      // Collapse — close any open extra items first
+      extra.querySelectorAll('.faq-item.is-open').forEach((i) => {
+        i.classList.remove('is-open');
+        i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+      extra.classList.remove('is-open');
+      extra.setAttribute('aria-hidden', 'true');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      label.textContent = 'View more';
+    } else {
+      extra.classList.add('is-open');
+      extra.setAttribute('aria-hidden', 'false');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      label.textContent = 'Show less';
+    }
+  });
+})();
+
+// ===== About — Read more / Show less =====
+(function () {
+  const btn = document.getElementById('about-read-more');
+  const panel = document.getElementById('about-more');
+  const lbl = btn && btn.querySelector('.about-read-more-label');
+  if (!btn || !panel) return;
+
+  btn.addEventListener('click', () => {
+    const isOpen = panel.classList.contains('is-open');
+
+    if (isOpen) {
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+      btn.setAttribute('aria-expanded', 'false');
+      lbl.textContent = 'Read more';
+    } else {
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+      btn.setAttribute('aria-expanded', 'true');
+      lbl.textContent = 'Show less';
+    }
+  });
+})();
