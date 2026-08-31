@@ -354,3 +354,77 @@
     }
   });
 })();
+
+// ===== Flip Text (ported from Vengence UI) =====
+(function () {
+  const DURATION  = 2.2;   // seconds — matches component default
+  const DELAY     = 0;     // initial delay offset
+  const LOOP      = true;
+  const SEPARATOR = ' ';
+
+  const targets = document.querySelectorAll('[data-flip-text]');
+  if (!targets.length) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  targets.forEach((el) => {
+    const text      = el.textContent.trim();
+    const words     = text.split(SEPARATOR);
+    const totalChars = text.length; // includes spaces in global index calculation
+
+    // Build global char index — mirrors getCharIndex() in the React component
+    const charGlobalIndex = [];
+    let idx = 0;
+    words.forEach((word, wi) => {
+      for (let ci = 0; ci < word.length; ci++) {
+        charGlobalIndex.push({ word: wi, char: ci, global: idx });
+        idx++;
+      }
+      if (wi < words.length - 1) idx++; // account for the space separator
+    });
+
+    // Clear and rebuild DOM
+    el.textContent = '';
+    el.classList.add('flip-text-wrapper');
+
+    let charPointer = 0;
+
+    words.forEach((word, wi) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'word';
+
+      word.split('').forEach((char) => {
+        const globalIdx = charGlobalIndex[charPointer]?.global ?? 0;
+        charPointer++;
+
+        const normalised = globalIdx / totalChars;
+        const sine       = Math.sin(normalised * (Math.PI / 2));
+        const charDelay  = prefersReduced ? 0 : (sine * (DURATION * 0.25) + DELAY);
+
+        const charSpan = document.createElement('span');
+        charSpan.className = 'flip-char';
+        charSpan.textContent = char;
+        charSpan.style.setProperty('--flip-duration',  `${DURATION}s`);
+        charSpan.style.setProperty('--flip-delay',     `${charDelay.toFixed(3)}s`);
+        charSpan.style.setProperty('--flip-iteration', LOOP ? 'infinite' : '1');
+
+        if (prefersReduced) {
+          charSpan.style.animationName = 'none';
+        }
+
+        wordSpan.appendChild(charSpan);
+      });
+
+      el.appendChild(wordSpan);
+
+      // Add space between words (except after last)
+      if (wi < words.length - 1) {
+        const space = document.createElement('span');
+        space.className = 'whitespace';
+        space.innerHTML = '&nbsp;';
+        el.appendChild(space);
+        charPointer++; // skip the space slot
+      }
+    });
+  });
+})();
