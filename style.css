@@ -386,16 +386,22 @@ body.drawer-open .nav {
   transition: opacity 0.4s ease 0.42s, transform 0.4s ease 0.42s;
 }
 
+.nav-drawer.is-active .drawer-link:nth-child(5) {
+  opacity: 0.85;
+  transform: translateX(0);
+  transition: opacity 0.4s ease 0.50s, transform 0.4s ease 0.50s;
+}
+
 .nav-drawer.is-active .drawer-cta {
   opacity: 1;
   transform: translateX(0);
-  transition-delay: 0.5s;
+  transition-delay: 0.58s;
 }
 
 .nav-drawer.is-active .drawer-footer {
   opacity: 1;
   transform: translateX(0);
-  transition-delay: 0.5s;
+  transition-delay: 0.58s;
 }
 
 /* ===== Hero ===== */
@@ -2180,3 +2186,303 @@ button:focus-visible {
   position: relative;
   z-index: 1;
 }
+
+/* ===== Graphic Design ===== */
+.graphic-design {
+  background-color: var(--off-white);
+  padding: 8rem 1.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gd-gallery {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin-bottom: 4rem;
+  height: 550px;
+}
+
+.gd-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  will-change: transform;
+}
+
+/* Stagger initial vertical position */
+.gd-col:nth-child(1) { margin-top: 60px; }
+.gd-col:nth-child(2) { margin-top: -20px; }
+.gd-col:nth-child(3) { margin-top: -80px; }
+.gd-col:nth-child(4) { margin-top: 20px; }
+.gd-col:nth-child(5) { margin-top: 80px; }
+
+.gd-img-placeholder {
+  width: 100%;
+  background-color: #E3DBCC;
+  border-radius: 1.25rem;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, box-shadow 0.3s ease;
+}
+
+.gd-img-placeholder.is-waiting {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.gd-img-placeholder.is-popped {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gd-img-placeholder:hover {
+  transform: scale(1.03);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.gd-content {
+  text-align: center;
+  max-width: 700px;
+  z-index: 2;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gd-content h2 {
+  margin-bottom: 1rem;
+}
+
+.gd-subhead {
+  font-size: 1.15rem;
+  color: #4a4a4a;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .gd-gallery {
+    height: 450px;
+    gap: 1rem;
+  }
+  .gd-col:nth-child(1), .gd-col:nth-child(5) {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .gd-gallery {
+    height: 350px;
+    gap: 0.75rem;
+  }
+  .gd-col:nth-child(2), .gd-col:nth-child(4) {
+    display: flex;
+  }
+  .gd-img-placeholder {
+    border-radius: 1rem;
+  }
+}
+
+/* ===== Corner Button ===== */
+.corner-btn-wrapper {
+  --dot-size: 6px;
+  --line-weight: 1px;
+  --padding: 0.9rem 1.1rem;
+  --speed: 0.35s;
+  --dot-color: #666;
+  --line-color: #999;
+  
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--padding);
+  background-color: transparent;
+  transition: background-color 0.3s ease-in-out;
+  user-select: none;
+}
+
+.corner-btn-wrapper:has(.corner-btn:hover) {
+  animation: corner-bg-change calc(var(--speed) * 4) ease-in-out forwards;
+}
+
+@keyframes corner-bg-change {
+  80%  { background-color: transparent; }
+  100% { background-color: var(--accent-glow); }
+}
+
+/* -- Button ------------------------- */
+.corner-btn {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.25rem;
+  background-color: var(--accent);
+  background-image: linear-gradient(#0000, #0004);
+  border: none;
+  color: #0008;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 30% / 200%;
+  cursor: pointer;
+  box-shadow:
+    0 0 0px 1px #0003,
+    0px 1px 1px rgba(3,7,18,.02),
+    0px 5px 4px rgba(3,7,18,.04),
+    0px 12px 9px rgba(3,7,18,.06),
+    0px 20px 15px rgba(3,7,18,.08),
+    0px 32px 24px rgba(3,7,18,.1);
+  transition:
+    background-color 0.2s ease-in-out,
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    border-radius 0.3s ease-in-out;
+}
+.corner-btn:hover {
+  background-color: #fff;
+  transform: scale(1.05);
+  border-radius: 10% / 200%;
+  color: #0008;
+}
+.corner-btn:active {
+  background-color: var(--accent);
+  transform: scale(0.98);
+  border-radius: 20% / 200%;
+}
+.corner-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* -- Icon --------------------------- */
+.corner-btn-svg {
+  height: 24px;
+  width: 24px;
+  flex-shrink: 0;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: #0007;
+  fill: #fffa;
+  transition: all 0.3s ease-in-out;
+}
+.corner-btn:hover .corner-btn-svg {
+  stroke: #0008;
+  fill: var(--accent);
+}
+.corner-btn:active .corner-btn-svg {
+  stroke: #0009;
+  fill: color-mix(in srgb, var(--accent) 80%, white);
+}
+
+/* -- Dots --------------------------- */
+.corner-dot {
+  position: absolute;
+  width: var(--dot-size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--dot-color);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-dot.top.left {
+  top: 50%; left: 20%;
+  animation: corner-dot-tl var(--speed) ease-in-out forwards;
+}
+@keyframes corner-dot-tl {
+  90%  { opacity: 0.6; }
+  100% { top: calc(var(--dot-size) * -0.5); left: calc(var(--dot-size) * -0.5); opacity: 1; }
+}
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-dot.top.right {
+  top: 50%; right: 20%;
+  animation: corner-dot-tr var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 0.6);
+}
+@keyframes corner-dot-tr {
+  80%  { opacity: 0.6; }
+  100% { top: calc(var(--dot-size) * -0.5); right: calc(var(--dot-size) * -0.5); opacity: 1; }
+}
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-dot.bottom.right {
+  bottom: 50%; right: 20%;
+  animation: corner-dot-br var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 1.2);
+}
+@keyframes corner-dot-br {
+  80%  { opacity: 0.6; }
+  100% { bottom: calc(var(--dot-size) * -0.5); right: calc(var(--dot-size) * -0.5); opacity: 1; }
+}
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-dot.bottom.left {
+  bottom: 50%; left: 20%;
+  animation: corner-dot-bl var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 1.8);
+}
+@keyframes corner-dot-bl {
+  80%  { opacity: 0.6; }
+  100% { bottom: calc(var(--dot-size) * -0.5); left: calc(var(--dot-size) * -0.5); opacity: 1; }
+}
+
+/* -- Lines -------------------------- */
+.corner-line {
+  position: absolute;
+  transition: all 0.3s ease-in-out;
+}
+.corner-line.horizontal {
+  height: var(--line-weight);
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #0000 0 calc(var(--line-weight) * 2),
+    var(--line-color) calc(var(--line-weight) * 2) calc(var(--line-weight) * 4)
+  );
+}
+.corner-line.vertical {
+  width: var(--line-weight);
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    0deg,
+    #0000 0 calc(var(--line-weight) * 2),
+    var(--line-color) calc(var(--line-weight) * 2) calc(var(--line-weight) * 4)
+  );
+}
+.corner-line.top    { top:    calc(var(--line-weight) * -0.5); transform-origin: top left;    transform: rotate(5deg) scaleX(0); }
+.corner-line.bottom { bottom: calc(var(--line-weight) * -0.5); transform-origin: bottom right; transform: rotate(5deg) scaleX(0); }
+.corner-line.left   { left:   calc(var(--line-weight) * -0.5); transform-origin: bottom left;  transform: scaleY(0); }
+.corner-line.right  { right:  calc(var(--line-weight) * -0.5); transform-origin: top right;    transform: rotate(5deg) scaleY(0); }
+
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-line.top {
+  animation: corner-line-top var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 0.8);
+}
+@keyframes corner-line-top    { 100% { transform: rotate(0deg) scaleX(1); } }
+
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-line.bottom {
+  animation: corner-line-bottom var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 2);
+}
+@keyframes corner-line-bottom { 100% { transform: rotate(0deg) scaleX(1); } }
+
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-line.left {
+  animation: corner-line-left var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 2.4);
+}
+@keyframes corner-line-left   { 100% { transform: scaleY(1); } }
+
+.corner-btn-wrapper:has(.corner-btn:hover) .corner-line.right {
+  animation: corner-line-right var(--speed) ease-in-out forwards;
+  animation-delay: calc(var(--speed) * 1.4);
+}
+@keyframes corner-line-right  { 100% { transform: rotate(0deg) scaleY(1); } }

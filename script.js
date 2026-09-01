@@ -13,7 +13,7 @@
 // ===== Scroll reveal (IntersectionObserver, cheap) =====
 (function () {
   const targets = document.querySelectorAll(
-    '.offer, .about, .services, .why, .portfolio, .contact'
+    '.offer, .about, .services, .why, .portfolio, .gd-content, .contact'
   );
   targets.forEach((el) => el.classList.add('reveal'));
 
@@ -427,4 +427,79 @@
       }
     });
   });
+})();
+
+// ===== Graphic Design Parallax =====
+(function () {
+  const section = document.getElementById('graphic-design');
+  const cols = document.querySelectorAll('.gd-col');
+  if (!section || !cols.length) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let ticking = false;
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+
+        // Check if section is within viewport roughly
+        if (rect.top <= viewportHeight && rect.bottom >= 0) {
+          const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+          const centerProgress = progress - 0.5;
+
+          cols.forEach(col => {
+            const speed = parseFloat(col.getAttribute('data-speed')) || 1;
+            const y = centerProgress * 150 * speed;
+            col.style.transform = `translate3d(0, ${y}px, 0)`;
+          });
+        }
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+})();
+
+// ===== Graphic Design Pop-in Stagger =====
+(function () {
+  const section = document.getElementById('graphic-design');
+  const items = document.querySelectorAll('.gd-img-placeholder');
+  if (!section || !items.length) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  if (!prefersReduced) {
+    items.forEach(item => item.classList.add('is-waiting'));
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Shuffle the items for a scattered pop-in effect
+          const shuffled = Array.from(items).sort(() => Math.random() - 0.5);
+          
+          shuffled.forEach((item, index) => {
+            setTimeout(() => {
+              item.classList.remove('is-waiting');
+              item.classList.add('is-popped');
+            }, index * 100 + 100); // 100ms stagger with 100ms initial delay
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 } // Trigger when 15% of section is visible
+  );
+  
+  if (!prefersReduced) {
+    observer.observe(section);
+  }
 })();
