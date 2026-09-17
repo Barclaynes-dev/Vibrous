@@ -503,3 +503,59 @@
     observer.observe(section);
   }
 })();
+
+// ===== Offer Countdown Timer (Ends Sept 30 Midnight) =====
+(function () {
+  const daysEl = document.getElementById('cd-days');
+  const hoursEl = document.getElementById('cd-hours');
+  const minutesEl = document.getElementById('cd-minutes');
+  const secondsEl = document.getElementById('cd-seconds');
+  const timerContainer = document.getElementById('offer-countdown');
+
+  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+  function getTargetDate() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    // September is month index 8 (0 = Jan, 8 = Sep)
+    // 30th September midnight = end of Sep 30 (23:59:59)
+    let target = new Date(currentYear, 8, 30, 23, 59, 59);
+
+    // If Sep 30 of this year has already passed, roll to next year
+    if (now.getTime() > target.getTime()) {
+      target = new Date(currentYear + 1, 8, 30, 23, 59, 59);
+    }
+    return target;
+  }
+
+  const targetDate = getTargetDate();
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = targetDate.getTime() - now.getTime();
+
+    if (diff <= 0) {
+      daysEl.textContent = '00';
+      hoursEl.textContent = '00';
+      minutesEl.textContent = '00';
+      secondsEl.textContent = '00';
+      const tag = timerContainer.querySelector('.countdown-tag');
+      if (tag) tag.textContent = 'Offer Expired';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    daysEl.textContent = String(days).padStart(2, '0');
+    hoursEl.textContent = String(hours).padStart(2, '0');
+    minutesEl.textContent = String(minutes).padStart(2, '0');
+    secondsEl.textContent = String(seconds).padStart(2, '0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
+
