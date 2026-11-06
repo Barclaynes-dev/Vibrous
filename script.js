@@ -13,7 +13,7 @@
 // ===== Scroll reveal (IntersectionObserver, cheap) =====
 (function () {
   const targets = document.querySelectorAll(
-    '.offer, .about, .services, .why, .portfolio, .gd-content, .contact'
+    '.pricing-section, .about, .services, .built-for, .why, .portfolio, .performance, .contact'
   );
   targets.forEach((el) => el.classList.add('reveal'));
 
@@ -98,11 +98,11 @@
   links.forEach(link => link.addEventListener('click', closeDrawer));
 })();
 
-// ===== Mobile Nav Scroll Background =====
+// ===== Nav Scroll Background =====
 (function () {
   const nav = document.querySelector('.nav');
-  const offerSection = document.getElementById('offer');
-  if (!nav || !offerSection) return;
+  const triggerSection = document.getElementById('pricing') || document.getElementById('offer');
+  if (!nav || !triggerSection) return;
 
   let ticking = false;
   window.addEventListener(
@@ -111,8 +111,8 @@
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        // Toggle background when offer section reaches the nav
-        if (offerSection.getBoundingClientRect().top <= 80) {
+        // Toggle background when pricing section reaches the nav
+        if (triggerSection.getBoundingClientRect().top <= 80) {
           nav.classList.add('nav-scrolled');
         } else {
           nav.classList.remove('nav-scrolled');
@@ -219,58 +219,7 @@
   observer.observe(section);
 })();
 
-// ===== Offer Heading Parallax Scroll (Optimized — No Layout Thrashing) =====
-(function () {
-  const offerSection = document.getElementById('offer');
-  if (!offerSection) return;
-
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
-
-  // Cache dimensions to prevent layout recalculations (thrashing) inside the scroll handler
-  let offerOffsetTop = 0;
-  let offerHeight = 0;
-  let viewportHeight = window.innerHeight;
-
-  function updateDimensions() {
-    offerOffsetTop = offerSection.offsetTop;
-    offerHeight = offerSection.offsetHeight;
-    viewportHeight = window.innerHeight;
-  }
-
-  // Calculate once fonts/images are ready
-  window.addEventListener('load', updateDimensions);
-  window.addEventListener('resize', updateDimensions, { passive: true });
-  updateDimensions(); // Initial baseline
-
-  let ticking = false;
-
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-
-        // Check if the section is within the viewport range
-        if (scrollY + viewportHeight > offerOffsetTop && scrollY < offerOffsetTop + offerHeight) {
-          const relativeScroll = scrollY - (offerOffsetTop - viewportHeight);
-          const range = offerHeight + viewportHeight;
-          const progress = relativeScroll / range;
-          const centerProgress = progress - 0.5;
-
-          const shiftValue = centerProgress * 150;
-
-          offerSection.style.setProperty('--scroll-shift-left', `${-shiftValue}px`);
-          offerSection.style.setProperty('--scroll-shift-right', `${shiftValue}px`);
-        }
-        ticking = false;
-      });
-    },
-    { passive: true }
-  );
-})();
+// Pricing card parallax and tilt effects removed.
 
 // ===== FAQ accordion =====
 (function () {
@@ -429,133 +378,144 @@
   });
 })();
 
-// ===== Graphic Design Parallax =====
+// ===== Pricing Configuration & Dynamic Rendering =====
 (function () {
-  const section = document.getElementById('graphic-design');
-  const cols = document.querySelectorAll('.gd-col');
-  if (!section || !cols.length) return;
+  const PRICING = {
+    plans: { starter: 350000, growth: 650000, business: 1200000 },
+    whatsappNumber: "256758335971"
+  };
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
+  const formatPrice = (num) => {
+    return Number(num).toLocaleString('en-US');
+  };
 
-  let ticking = false;
-
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const rect = section.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-
-        // Check if section is within viewport roughly
-        if (rect.top <= viewportHeight && rect.bottom >= 0) {
-          const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
-          const centerProgress = progress - 0.5;
-
-          cols.forEach(col => {
-            const speed = parseFloat(col.getAttribute('data-speed')) || 1;
-            const y = centerProgress * 150 * speed;
-            col.style.transform = `translate3d(0, ${y}px, 0)`;
-          });
-        }
-        ticking = false;
-      });
-    },
-    { passive: true }
-  );
-})();
-
-// ===== Graphic Design Pop-in Stagger =====
-(function () {
-  const section = document.getElementById('graphic-design');
-  const items = document.querySelectorAll('.gd-img-placeholder');
-  if (!section || !items.length) return;
-
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  if (!prefersReduced) {
-    items.forEach(item => item.classList.add('is-waiting'));
-  }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Shuffle the items for a scattered pop-in effect
-          const shuffled = Array.from(items).sort(() => Math.random() - 0.5);
-          
-          shuffled.forEach((item, index) => {
-            setTimeout(() => {
-              item.classList.remove('is-waiting');
-              item.classList.add('is-popped');
-            }, index * 100 + 100); // 100ms stagger with 100ms initial delay
-          });
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15 } // Trigger when 15% of section is visible
-  );
-  
-  if (!prefersReduced) {
-    observer.observe(section);
-  }
-})();
-
-// ===== Offer Countdown Timer (Ends Sept 30 Midnight) =====
-(function () {
-  const daysEl = document.getElementById('cd-days');
-  const hoursEl = document.getElementById('cd-hours');
-  const minutesEl = document.getElementById('cd-minutes');
-  const secondsEl = document.getElementById('cd-seconds');
-  const timerContainer = document.getElementById('offer-countdown');
-
-  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
-
-  function getTargetDate() {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    // September is month index 8 (0 = Jan, 8 = Sep)
-    // 30th September midnight = end of Sep 30 (23:59:59)
-    let target = new Date(currentYear, 8, 30, 23, 59, 59);
-
-    // If Sep 30 of this year has already passed, roll to next year
-    if (now.getTime() > target.getTime()) {
-      target = new Date(currentYear + 1, 8, 30, 23, 59, 59);
+  // Render prices from config
+  const priceVals = document.querySelectorAll('.pricing-section .price-val[data-plan]');
+  priceVals.forEach((val) => {
+    const plan = val.getAttribute('data-plan');
+    if (plan && PRICING.plans[plan] !== undefined) {
+      val.textContent = formatPrice(PRICING.plans[plan]);
     }
-    return target;
-  }
+  });
 
-  const targetDate = getTargetDate();
+  // Build WhatsApp links from config
+  const planNames = {
+    starter: 'Starter plan',
+    growth: 'Growth plan',
+    business: 'Business plan'
+  };
 
-  function updateCountdown() {
-    const now = new Date();
-    const diff = targetDate.getTime() - now.getTime();
-
-    if (diff <= 0) {
-      daysEl.textContent = '00';
-      hoursEl.textContent = '00';
-      minutesEl.textContent = '00';
-      secondsEl.textContent = '00';
-      const tag = timerContainer.querySelector('.countdown-tag');
-      if (tag) tag.textContent = 'Offer Expired';
-      return;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    daysEl.textContent = String(days).padStart(2, '0');
-    hoursEl.textContent = String(hours).padStart(2, '0');
-    minutesEl.textContent = String(minutes).padStart(2, '0');
-    secondsEl.textContent = String(seconds).padStart(2, '0');
-  }
-
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
+  const buttons = document.querySelectorAll('.pricing-section .pricing-btn[data-plan]');
+  buttons.forEach((btn) => {
+    const plan = btn.getAttribute('data-plan');
+    const planName = planNames[plan] || 'Starter plan';
+    const message = encodeURIComponent(`Hi Vibrous, I'm interested in the ${planName}.`).replace(/'/g, '%27');
+    btn.href = `https://wa.me/${PRICING.whatsappNumber}?text=${message}`;
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+  });
 })();
 
+
+// ===== Performance Section — Lighthouse scores =====
+(function () {
+  // ----------------------------------------------------------------
+  // CONFIG — fill in real Lighthouse mobile scores (0–100) and the
+  // month/year they were measured, e.g. measured: "Nov 2026".
+  // Leave any score as null (or measured as "") to keep the section
+  // hidden until you have real data.
+  // ----------------------------------------------------------------
+  const LIGHTHOUSE = {
+    performance:   null,
+    accessibility: null,
+    bestPractices: null,
+    seo:           null,
+    measured:      ""
+  };
+  // ----------------------------------------------------------------
+
+  const section = document.getElementById('performance');
+  if (!section) return;
+
+  // Guard: hide section completely if any score is missing
+  const scores = [LIGHTHOUSE.performance, LIGHTHOUSE.accessibility, LIGHTHOUSE.bestPractices, LIGHTHOUSE.seo];
+  const allFilled = LIGHTHOUSE.measured.trim() !== '' && scores.every((s) => s !== null && !isNaN(s));
+  if (!allFilled) {
+    section.setAttribute('aria-hidden', 'true');
+    return; // section stays display:none via CSS
+  }
+
+  // Show section
+  section.classList.add('perf-ready');
+  section.removeAttribute('aria-hidden');
+
+  // Stamp measured date
+  const measuredEl = section.querySelector('.perf-measured');
+  if (measuredEl) measuredEl.textContent = LIGHTHOUSE.measured;
+
+  // Ring geometry
+  const R = 36; // radius of the arc
+  const CIRCUMFERENCE = 2 * Math.PI * R; // ≈ 226.2
+
+  // Ring color by score band
+  function ringColor(score) {
+    if (score >= 90) return '#C9A227';          // Signal Gold
+    if (score >= 50) return '#3a3a3a';          // Dark neutral
+    return '#b94040';                           // Muted red
+  }
+
+  // Build a score card element
+  function makeCard(score, label) {
+    const pct = Math.min(100, Math.max(0, score)) / 100;
+    const dash = pct * CIRCUMFERENCE;
+    const gap  = CIRCUMFERENCE - dash;
+    const color = ringColor(score);
+
+    const card = document.createElement('div');
+    card.className = 'perf-card';
+    card.setAttribute('role', 'img');
+    card.setAttribute('aria-label', `${label} ${score} out of 100`);
+
+    card.innerHTML = `
+      <svg class="perf-ring" viewBox="0 0 88 88" aria-hidden="true" focusable="false">
+        <circle class="perf-ring-track" cx="44" cy="44" r="${R}"/>
+        <circle class="perf-ring-fill"
+          cx="44" cy="44" r="${R}"
+          stroke="${color}"
+          stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+        />
+        <text class="perf-ring-label" x="44" y="44">${score}</text>
+      </svg>
+      <span class="perf-score-label">${label}</span>`;
+
+    return card;
+  }
+
+  const container = section.querySelector('#perf-cards');
+  if (!container) return;
+
+  const labels = ['Performance', 'Accessibility', 'Best Practices', 'SEO'];
+  scores.forEach((score, i) => {
+    container.appendChild(makeCard(score, labels[i]));
+  });
+
+  // Scroll-reveal the individual cards
+  const cards = container.querySelectorAll('.perf-card');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    cards.forEach((c) => c.classList.add('is-visible'));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    cards.forEach((c) => obs.observe(c));
+  }
+})();
