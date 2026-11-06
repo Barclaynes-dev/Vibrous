@@ -3,6 +3,7 @@
   src: url('fonts/vibrous-font.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -10,6 +11,7 @@
   src: url('fonts/CormorantGaramond.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
 
 /* ===== Tokens ===== */
@@ -32,6 +34,15 @@
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+}
+
+.bi-svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 html {
@@ -2632,7 +2643,8 @@ button:focus-visible {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   color: var(--obsidian);
   text-align: center;
-  margin-bottom: 1rem;
+  max-width: 720px;
+  margin: 0 auto 1rem;
 }
 
 .built-for-sub {
